@@ -23,6 +23,7 @@ contract DeFiStrategyOptimizer {
     }
 
     function getStrategiesData() public view returns (Strategy[] memory) {
+        require(strategies.length > 0, "No strategies available");
         return strategies;
     }
 

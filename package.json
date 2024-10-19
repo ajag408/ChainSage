@@ -20,7 +20,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postcompile": "mkdir -p src/artifacts/contracts/DeFiStrategyOptimizer.sol && cp artifacts/contracts/DeFiStrategyOptimizer.sol/DeFiStrategyOptimizer.json src/artifacts/contracts/DeFiStrategyOptimizer.sol/"
   },
   "eslintConfig": {
     "extends": [

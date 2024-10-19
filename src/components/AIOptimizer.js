@@ -1,69 +1,100 @@
 import React, { useState, useEffect } from "react";
 import AIModel from "../AIModel";
+import StrategyDisplay from "./StrategyDisplay";
 import { ethers } from "ethers";
 import DeFiStrategyOptimizerABI from "../artifacts/contracts/DeFiStrategyOptimizer.sol/DeFiStrategyOptimizer.json";
 
-const contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
+const contractAddress = "0x9317ce9c06a8f69ACB3bf47f11ce4026ebD7cB84";
 
-function AIOptimizer() {
+function AIOptimizer({ provider, network }) {
   const [strategies, setStrategies] = useState([]);
   const [aiModel, setAiModel] = useState(null);
   const [optimizedStrategy, setOptimizedStrategy] = useState(null);
+  const [isTraining, setIsTraining] = useState(false);
 
   useEffect(() => {
     const fetchStrategies = async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(
-        contractAddress,
-        DeFiStrategyOptimizerABI.abi,
-        provider
-      );
-      const fetchedStrategies = await contract.getStrategiesData();
-      setStrategies(fetchedStrategies);
+      try {
+        const contract = new ethers.Contract(
+          contractAddress,
+          DeFiStrategyOptimizerABI.abi,
+          provider
+        );
+        console.log("Contract instance created");
+        const fetchedStrategies = await contract.getStrategiesData();
+        const processedStrategies = fetchedStrategies.map((strategy) => ({
+          name: strategy.name,
+          apy: strategy.apy.toString(),
+          risk: strategy.risk.toString(),
+          liquidity: strategy.liquidity.toString(),
+          volatility: strategy.volatility.toString(),
+        }));
+        console.log("Fetched strategies:", processedStrategies);
+        setStrategies(processedStrategies);
+      } catch (error) {
+        console.error("Error fetching strategies:", error);
+        setStrategies([]);
+      }
     };
 
-    fetchStrategies();
-    setAiModel(new AIModel());
-  }, []);
+    if (provider && network) {
+      fetchStrategies();
+      setAiModel(new AIModel());
+    }
+  }, [provider, network]);
 
   useEffect(() => {
     if (aiModel && strategies.length > 0) {
-      trainAndPredict();
+      const timer = setTimeout(() => {
+        trainAndPredict();
+      }, 1000); // Delay of 1 second
+      return () => clearTimeout(timer);
     }
   }, [aiModel, strategies]);
 
   const trainAndPredict = async () => {
-    const trainingData = strategies.map((s) => [
-      s.apy,
-      s.risk,
-      s.liquidity,
-      s.volatility,
-    ]);
-    const labels = strategies.map((s) => [s.apy]); // Using APY as the target variable
+    if (isTraining) return;
+    setIsTraining(true);
+    try {
+      const trainingData = strategies.map((s) => [
+        parseFloat(s.apy),
+        parseFloat(s.risk),
+        parseFloat(s.liquidity),
+        parseFloat(s.volatility),
+      ]);
+      const labels = strategies.map((s) => [parseFloat(s.apy)]);
 
-    await aiModel.train(trainingData, labels);
+      await aiModel.train(trainingData, labels);
 
-    const predictions = strategies.map((s) => ({
-      name: s.name,
-      score: aiModel.predict([s.apy, s.risk, s.liquidity, s.volatility]),
-    }));
+      const predictions = strategies.map((s) => ({
+        name: s.name,
+        score: aiModel.predict([
+          parseFloat(s.apy),
+          parseFloat(s.risk),
+          parseFloat(s.liquidity),
+          parseFloat(s.volatility),
+        ]),
+      }));
 
-    const bestStrategy = predictions.reduce((prev, current) =>
-      prev.score > current.score ? prev : current
-    );
+      const bestStrategy = predictions.reduce((prev, current) =>
+        prev.score > current.score ? prev : current
+      );
 
-    setOptimizedStrategy(bestStrategy);
+      setOptimizedStrategy(bestStrategy);
+    } catch (error) {
+      console.error("Error in trainAndPredict:", error);
+    } finally {
+      setIsTraining(false);
+    }
   };
 
   return (
     <div>
-      <h2>AI Optimized Strategy</h2>
-      {optimizedStrategy && (
-        <p>
-          The AI recommends: {optimizedStrategy.name} with a score of{" "}
-          {optimizedStrategy.score.toFixed(2)}
-        </p>
-      )}
+      <h2>DeFi Strategy Optimizer</h2>
+      <StrategyDisplay
+        strategies={strategies}
+        optimizedStrategy={optimizedStrategy}
+      />
     </div>
   );
 }

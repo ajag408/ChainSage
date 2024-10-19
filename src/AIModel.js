@@ -8,7 +8,7 @@ class AIModel {
   createModel() {
     const model = tf.sequential();
     model.add(
-      tf.layers.dense({ units: 10, inputShape: [3], activation: "relu" })
+      tf.layers.dense({ units: 10, inputShape: [4], activation: "relu" })
     );
     model.add(tf.layers.dense({ units: 1, activation: "linear" }));
     model.compile({ optimizer: "adam", loss: "meanSquaredError" });

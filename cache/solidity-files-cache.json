@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/Akash1/Desktop/ChainSage/chainsage/contracts/DeFiStrategyOptimizer.sol": {
-      "lastModificationDate": 1729325234393,
-      "contentHash": "27013874191c5f2ebe0351feb3328607",
+      "lastModificationDate": 1729329848505,
+      "contentHash": "7ef4e163ef9a05298cfe6c5d97c4a385",
       "sourceName": "contracts/DeFiStrategyOptimizer.sol",
       "solcConfig": {
         "version": "0.8.19",
