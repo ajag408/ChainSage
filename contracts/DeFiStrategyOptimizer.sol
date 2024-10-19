@@ -6,6 +6,8 @@ contract DeFiStrategyOptimizer {
         string name;
         uint256 apy;
         uint256 risk;
+        uint256 liquidity;
+        uint256 volatility;
     }
 
     Strategy[] public strategies;
@@ -15,9 +17,13 @@ contract DeFiStrategyOptimizer {
         owner = msg.sender;
     }
 
-    function addStrategy(string memory _name, uint256 _apy, uint256 _risk) public {
+    function addStrategy(string memory _name, uint256 _apy, uint256 _risk, uint256 _liquidity, uint256 _volatility) public {
         require(msg.sender == owner, "Only owner can add strategies");
-        strategies.push(Strategy(_name, _apy, _risk));
+        strategies.push(Strategy(_name, _apy, _risk, _liquidity, _volatility));
+    }
+
+    function getStrategiesData() public view returns (Strategy[] memory) {
+        return strategies;
     }
 
     function getOptimalStrategy() public view returns (string memory, uint256, uint256) {
