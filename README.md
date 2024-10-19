@@ -1,70 +1,82 @@
-# Getting Started with Create React App
+# ChainSage DeFi Strategy Optimizer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ChainSage is a decentralized application (dApp) that uses artificial intelligence to optimize DeFi investment strategies. It leverages smart contracts on the Zircuit testnet and a React frontend to provide users with AI-driven insights for their DeFi investments.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Connect to Zircuit testnet using MetaMask
+- Fetch and display DeFi strategies from a smart contract
+- Use AI to analyze and recommend optimal strategies
+- Interactive user interface for viewing strategies and AI recommendations
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js (v14 or later)
+- npm or yarn
+- MetaMask browser extension
+- A wallet with some testnet ZIR tokens
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Setup Instructions
 
-### `npm test`
+1. Clone the repository:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```
+   git clone https://github.com/yourusername/chainsage.git
+   cd chainsage
+   ```
 
-### `npm run build`
+2. Install dependencies:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```
+   npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Create a `.env` file in the root directory and add your private key:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```
+   PRIVATE_KEY=your_private_key_here
+   ```
 
-### `npm run eject`
+4. Compile the smart contracts:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   ```
+   npx hardhat compile
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+5. Deploy the smart contract to the Zircuit testnet:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   ```
+   npx hardhat run scripts/deploy.js --network zircuitTestnet
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+6. Update the contract address in `src/components/AIOptimizer.js`:
 
-## Learn More
+7. Start the development server:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```
+   npm start
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+8. Open your browser and navigate to `http://localhost:3000`
 
-### Code Splitting
+## Running Tests
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+To run the test suite:
 
-### Analyzing the Bundle Size
+```
+npx hardhat test
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Building for Production
 
-### Making a Progressive Web App
+To create a production build:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+npm run build
+```
 
-### Advanced Configuration
+This will generate a `build` folder with optimized production-ready files.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## License
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License.
