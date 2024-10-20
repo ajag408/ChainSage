@@ -1,0 +1,51 @@
+.strategy-display {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .strategies-list, .optimized-strategy {
+    flex: 1;
+    background-color: white;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .strategy-item {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+  }
+  
+  .strategy-item:hover {
+    transform: translateY(-2px);
+  }
+  
+  .strategy-item h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+  }
+  
+  .strategy-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+  
+  .strategy-details p {
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .optimized {
+    background-color: #e6f7ff;
+    border-color: #91d5ff;
+  }
+  
+  .optimized h4 {
+    color: #0066cc;
+  }

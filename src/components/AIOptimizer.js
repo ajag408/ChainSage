@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import ChainSageOAppABI from "../artifacts/contracts/ChainSageOApp.sol/ChainSageOApp.json";
 import { Options } from "@layerzerolabs/lz-v2-utilities";
 import PhalaAIModel from "../PhalaAIModel";
+import "../styles/AIOptimizer.css";
 
 const contractAddress = "0xD12b1AA4dc3B67344BCa78595B6aB18649DE1c22";
 // 0x47837D3715F5B46B0BC470c202b644e3Cf6B99B2
@@ -89,6 +90,9 @@ function AIOptimizer({ provider, network }) {
         const simulatedStrategy = {
           name: "Simulated Optimal Strategy",
           apy: (Math.random() * 1000).toFixed(2).toString(),
+          risk: Math.floor(Math.random() * 5) + 1,
+          liquidity: (Math.random() * 10000).toFixed(2).toString(),
+          volatility: (Math.random() * 100).toFixed(2).toString(),
         };
         setOptimizedStrategy(simulatedStrategy);
         setIsOptimizing(false);
@@ -136,6 +140,9 @@ function AIOptimizer({ provider, network }) {
         setOptimizedStrategy({
           name: `${bestStrategy.name}`,
           apy: bestStrategy.apy.toString(),
+          risk: bestStrategy.risk.toString(),
+          liquidity: bestStrategy.liquidity.toString(),
+          volatility: bestStrategy.volatility.toString(),
         });
         setIsOptimizing(false);
       }, 3000);
@@ -167,6 +174,9 @@ function AIOptimizer({ provider, network }) {
       setOptimizedStrategy({
         name: optimizedStrategy.name,
         apy: optimizedStrategy.apy.toString(),
+        risk: optimizedStrategy.risk.toString(),
+        liquidity: optimizedStrategy.liquidity.toString(),
+        volatility: optimizedStrategy.volatility.toString(),
       });
       setIsOptimizing(false);
     } catch (error) {
@@ -181,24 +191,40 @@ function AIOptimizer({ provider, network }) {
   return (
     <div>
       <h2>Cross-Chain DeFi Strategy Optimizer</h2>
-      {isLoading && <p>Loading strategies...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {isLoading && <div className="loader">Loading strategies...</div>}
+      {error && <div className="error">{error}</div>}
       {!isLoading && !error && (
         <StrategyDisplay
           strategies={sortedStrategies}
           optimizedStrategy={optimizedStrategy}
         />
       )}
-      <button onClick={optimizeStrategy} disabled={isOptimizing}>
+      <button
+        className="optimize-button"
+        onClick={optimizeStrategy}
+        disabled={isOptimizing}
+      >
         {isOptimizing ? "Optimizing..." : "Optimize Strategy"}
       </button>
-      <button onClick={optimizeZircuitStrategy} disabled={isOptimizing}>
+      <button
+        className="optimize-button"
+        onClick={optimizeZircuitStrategy}
+        disabled={isOptimizing}
+      >
         {isOptimizing ? "Optimizing..." : "Optimize Zircuit Strategy"}
       </button>
-      <button onClick={optimizeWithPhala} disabled={isOptimizing}>
+      <button
+        className="optimize-button"
+        onClick={optimizeWithPhala}
+        disabled={isOptimizing}
+      >
         {isOptimizing ? "Optimizing..." : "Optimize with Phala"}
       </button>
-      {isOptimizing && <p>Optimizing strategy across chains. Please wait...</p>}
+      {isOptimizing && (
+        <div className="optimizing-message">
+          Optimizing strategy across chains. Please wait...
+        </div>
+      )}
     </div>
   );
 }
