@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require("dotenv").config();
 require("@layerzerolabs/test-devtools-evm-hardhat");
+require("@nomicfoundation/hardhat-verify");
 
 module.exports = {
   solidity: {
@@ -38,5 +39,21 @@ module.exports = {
     cache: "./cache",
     artifacts: "./artifacts",
     imports: ["./node_modules"],
+  },
+  etherscan: {
+    apiKey: {
+      zircuitTestnet: "436B1F8A864E8FE0A3CC7A72C02B167F7D",
+    },
+    customChains: [
+      {
+        network: "zircuitTestnet",
+        chainId: 48899,
+        urls: {
+          apiURL:
+            "https://explorer.testnet.zircuit.com/api/contractVerifyHardhat",
+          browserURL: "https://explorer.testnet.zircuit.com/",
+        },
+      },
+    ],
   },
 };

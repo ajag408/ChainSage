@@ -5,6 +5,9 @@ ChainSage is a decentralized application (dApp) that uses artificial intelligenc
 ## Features
 
 - Connect to Zircuit testnet using MetaMask
+  Zircuit OAPP: Contract address: https://explorer.testnet.zircuit.com/address/0xD12b1AA4dc3B67344BCa78595B6aB18649DE1c22#code
+  OP Sepolia OApp: https://explorer.testnet.zircuit.com/address/0x47837D3715F5B46B0BC470c202b644e3Cf6B99B2#code
+
 - Fetch and display DeFi strategies from a smart contract
 - Use AI to analyze and recommend optimal strategies
 - Interactive user interface for viewing strategies and AI recommendations

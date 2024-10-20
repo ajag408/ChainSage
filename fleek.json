@@ -1,0 +1,10 @@
+{
+    "site": {
+      "id": "ChainSage",
+      "team": "akash.jagannathan",
+      "platform": "ipfs",
+      "source": "react",
+      "buildCommand": "npm run build",
+      "publicDir": "build"
+    }
+  }
