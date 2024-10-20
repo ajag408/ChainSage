@@ -40,14 +40,7 @@ async function main() {
   console.log("Initial strategies added and chain ID mappings set");
 
   // Add a Zircuit-specific strategy
-  await optimizer.addStrategy(
-    ZIRCUIT_TESTNET_EID,
-    "Zircuit Strategy",
-    1000,
-    3,
-    1000,
-    2
-  );
+  await optimizer.addStrategy(40282, "Zircuit Strategy", 1000, 3, 1000, 2);
 
   console.log("Zircuit-specific strategy added");
 

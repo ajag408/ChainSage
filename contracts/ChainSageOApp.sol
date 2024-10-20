@@ -91,6 +91,20 @@ function _lzReceive(
         return best;
     }
 
+    function optimizeWithPhala(uint32 _eid) external view returns (Strategy memory) {
+    require(strategies[_eid].length > 0, "No strategies available for this EID");
+    
+    // Simulate Phala optimization by returning the strategy with the highest APY
+    Strategy memory bestStrategy = strategies[_eid][0];
+    for (uint i = 1; i < strategies[_eid].length; i++) {
+        if (strategies[_eid][i].apy > bestStrategy.apy) {
+            bestStrategy = strategies[_eid][i];
+        }
+    }
+    
+    return bestStrategy;
+}
+
     function calculateStrategyScore(Strategy memory _strategy) internal pure returns (uint256) {
         return _strategy.apy * (100 - _strategy.risk) * _strategy.liquidity / (100 * _strategy.volatility);
     }

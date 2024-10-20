@@ -3,9 +3,10 @@ import StrategyDisplay from "./StrategyDisplay";
 import { ethers } from "ethers";
 import ChainSageOAppABI from "../artifacts/contracts/ChainSageOApp.sol/ChainSageOApp.json";
 import { Options } from "@layerzerolabs/lz-v2-utilities";
+import PhalaAIModel from "../PhalaAIModel";
 
-const contractAddress = "0xD9ab8923Bd00B0734dE33914636ac65ccF41c623";
-
+const contractAddress = "0xD12b1AA4dc3B67344BCa78595B6aB18649DE1c22";
+// 0x47837D3715F5B46B0BC470c202b644e3Cf6B99B2
 async function waitForTransaction(provider, txHash, maxAttempts = 10) {
   for (let i = 0; i < maxAttempts; i++) {
     console.log(`Attempt ${i + 1} to get transaction receipt...`);
@@ -122,7 +123,7 @@ function AIOptimizer({ provider, network }) {
           prev.apy > current.apy ? prev : current
         );
         setOptimizedStrategy({
-          name: `Zircuit ${bestStrategy.name}`,
+          name: `${bestStrategy.name}`,
           apy: bestStrategy.apy.toString(),
         });
         setIsOptimizing(false);
@@ -131,6 +132,36 @@ function AIOptimizer({ provider, network }) {
       console.error("Error optimizing Zircuit strategy:", error);
       alert(
         "Error optimizing Zircuit strategy. Please check the console for details."
+      );
+      setIsOptimizing(false);
+    }
+  };
+
+  const optimizeWithPhala = async () => {
+    setIsOptimizing(true);
+    try {
+      const contract = new ethers.Contract(
+        contractAddress,
+        ChainSageOAppABI.abi,
+        provider
+      );
+
+      const phalaModel = new PhalaAIModel(
+        contractAddress,
+        ChainSageOAppABI.abi,
+        provider
+      );
+      const optimizedStrategy = await phalaModel.optimizeStrategy(strategies);
+
+      setOptimizedStrategy({
+        name: optimizedStrategy.name,
+        apy: optimizedStrategy.apy.toString(),
+      });
+      setIsOptimizing(false);
+    } catch (error) {
+      console.error("Error optimizing with Phala:", error);
+      alert(
+        "Error optimizing with Phala. Please check the console for details."
       );
       setIsOptimizing(false);
     }
@@ -154,6 +185,9 @@ function AIOptimizer({ provider, network }) {
       </button>
       <button onClick={optimizeZircuitStrategy} disabled={isOptimizing}>
         {isOptimizing ? "Optimizing..." : "Optimize Zircuit Strategy"}
+      </button>
+      <button onClick={optimizeWithPhala} disabled={isOptimizing}>
+        {isOptimizing ? "Optimizing..." : "Optimize with Phala"}
       </button>
       {isOptimizing && <p>Optimizing strategy across chains. Please wait...</p>}
     </div>

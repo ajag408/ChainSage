@@ -204,7 +204,7 @@ describe("ChainSageOApp", function () {
     expect(bestChainId).to.equal(DESTINATION_EID);
   });
 
-  it.only("Should optimize Zircuit strategy with bonus", async function () {
+  it("Should optimize Zircuit strategy with bonus", async function () {
     await chainSageOApp
       .connect(owner)
       .setChainIdMapping(
@@ -241,18 +241,19 @@ describe("ChainSageOApp", function () {
     // Note: We can't test for the StrategyOptimized event as it's not emitted
   });
 
-  // it("Should optimize strategy using Phala simulation", async function () {
-  //   await chainSageOApp
-  //     .connect(owner)
-  //     .addStrategy(ZIRCUIT_TESTNET_EID, "Strategy A", 500, 3, 1000, 2);
-  //   await chainSageOApp
-  //     .connect(owner)
-  //     .addStrategy(ZIRCUIT_TESTNET_EID, "Strategy B", 700, 4, 800, 3);
+  it.only("Should simulate Phala-based strategy optimization", async function () {
+    await chainSageOApp
+      .connect(owner)
+      .addStrategy(ZIRCUIT_TESTNET_EID, "Strategy A", 500, 3, 1000, 2);
+    await chainSageOApp
+      .connect(owner)
+      .addStrategy(ZIRCUIT_TESTNET_EID, "Strategy B", 700, 4, 800, 3);
 
-  //   await expect(
-  //     chainSageOApp.connect(user).optimizeWithPhala(ZIRCUIT_TESTNET_EID)
-  //   )
-  //     .to.emit(chainSageOApp, "StrategyOptimized")
-  //     .withArgs(ZIRCUIT_TESTNET_EID, ZIRCUIT_TESTNET_EID, "Strategy B", 700);
-  // });
+    const optimizedStrategy = await chainSageOApp.optimizeWithPhala(
+      ZIRCUIT_TESTNET_EID
+    );
+
+    expect(optimizedStrategy.name).to.equal("Strategy B");
+    expect(optimizedStrategy.apy).to.equal(700);
+  });
 });
