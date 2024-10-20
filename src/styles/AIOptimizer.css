@@ -12,6 +12,18 @@
     text-align: center;
     margin-bottom: 20px;
   }
+
+  .optimized-strategy {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #e6f7ff;
+    border-radius: 5px;
+  }
+  
+  .optimized-strategy h3 {
+    color: #0066cc;
+    margin-bottom: 15px;
+  }
   
   .loader, .error, .optimizing-message {
     text-align: center;
@@ -55,4 +67,27 @@
   .optimize-button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
+  }
+
+  .strategy-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .strategy-item.optimized {
+    border: 2px solid #4CAF50;
+  }
+  
+  .strategy-details {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .strategy-details p {
+    margin: 5px 0;
+    flex-basis: 48%;
   }

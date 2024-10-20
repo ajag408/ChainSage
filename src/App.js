@@ -15,9 +15,19 @@ function App() {
   return (
     <div className="App">
       <h1>ChainSage DeFi Strategy Optimizer</h1>
+      <p className="intro">
+        Welcome to ChainSage! We use AI to optimize your DeFi investment
+        strategies across multiple chains. Connect your wallet to get started
+        and explore personalized recommendations.
+      </p>
       <WalletConnection onConnect={handleWalletConnect} />
-      {provider && network && (
+      {provider && network ? (
         <AIOptimizer provider={provider} network={network} />
+      ) : (
+        <p className="instruction">
+          Please connect your wallet to the Zircuit Testnet to view and optimize
+          DeFi strategies.
+        </p>
       )}
     </div>
   );

@@ -1,85 +1,73 @@
-# ChainSage DeFi Strategy Optimizer
+# ChainSage: AI-Powered DeFi Strategy Optimizer
 
-ChainSage is a decentralized application (dApp) that uses artificial intelligence to optimize DeFi investment strategies. It leverages smart contracts on the Zircuit testnet and a React frontend to provide users with AI-driven insights for their DeFi investments.
+ChainSage is a decentralized application (dApp) that leverages artificial intelligence to optimize DeFi investment strategies across multiple chains. It utilizes smart contracts on the Zircuit testnet and a React frontend to provide users with AI-driven insights for their DeFi investments.
+
+## Problem Statement
+
+In the rapidly evolving DeFi landscape, investors face challenges in identifying optimal investment strategies across multiple chains. ChainSage addresses this by:
+
+1. Aggregating DeFi strategies from various chains
+2. Utilizing AI to analyze and recommend optimal strategies based on user preferences
+3. Providing a user-friendly interface for strategy comparison and selection
+4. Enabling cross-chain strategy optimization through LayerZero's interoperability protocol
 
 ## Features
 
 - Connect to Zircuit testnet using MetaMask
-  Zircuit OAPP: Contract address: https://explorer.testnet.zircuit.com/address/0xD12b1AA4dc3B67344BCa78595B6aB18649DE1c22#code
-  OP Sepolia OApp: https://explorer.testnet.zircuit.com/address/0x47837D3715F5B46B0BC470c202b644e3Cf6B99B2#code
-
-- Fetch and display DeFi strategies from a smart contract
+- Fetch and display DeFi strategies from smart contracts
 - Use AI to analyze and recommend optimal strategies
 - Interactive user interface for viewing strategies and AI recommendations
+- Cross-chain strategy optimization using LayerZero
 
-## Prerequisites
+## Technology Stack
 
-- Node.js (v14 or later)
-- npm or yarn
-- MetaMask browser extension
-- A wallet with some testnet ZIR tokens
+- Frontend: React.js
+- Smart Contracts: Solidity
+- AI Model: TensorFlow.js
+- Blockchain: Zircuit Testnet
+- Cross-chain Messaging: LayerZero
+- Confidential Computing: Phala Network
+- Deployment: Vercel
 
-## Setup Instructions
+## Integrations
 
-1. Clone the repository:
+### LayerZero
 
-   ```
-   git clone https://github.com/yourusername/chainsage.git
-   cd chainsage
-   ```
+ChainSage leverages LayerZero's cross-chain messaging protocol to enable strategy optimization across multiple chains. This integration allows users to compare and select strategies from different networks seamlessly.
 
-2. Install dependencies:
+### Zircuit
 
-   ```
-   npm install
-   ```
+Our smart contracts are deployed on the Zircuit Testnet, taking advantage of its high-performance, EVM-compatible environment. Contract addresses:
 
-3. Create a `.env` file in the root directory and add your private key:
+- Zircuit OApp: [0xD12b1AA4dc3B67344BCa78595B6aB18649DE1c22](https://explorer.testnet.zircuit.com/address/0xD12b1AA4dc3B67344BCa78595B6aB18649DE1c22#code)
+- OP Sepolia OApp: [0x47837D3715F5B46B0BC470c202b644e3Cf6B99B2](https://explorer.testnet.zircuit.com/address/0x47837D3715F5B46B0BC470c202b644e3Cf6B99B2#code)
 
-   ```
-   PRIVATE_KEY=your_private_key_here
-   ```
+### Phala Network
 
-4. Compile the smart contracts:
+ChainSage utilizes Phala Network's confidential computing capabilities to ensure the privacy and security of our AI model. This integration allows us to perform strategy optimizations in a Trusted Execution Environment (TEE).
 
-   ```
-   npx hardhat compile
-   ```
+### Vercel Deployment
 
-5. Deploy the smart contract to the Zircuit testnet:
+Our frontend is deployed on Vercel, ensuring fast and reliable hosting for the ChainSage dApp. You can access the live version at [\[Your Vercel URL\]](https://chain-sage-8a6iv5zlx-jak18000s-projects.vercel.app/).
 
-   ```
-   npx hardhat run scripts/deploy.js --network zircuitTestnet
-   ```
+## Deployment
 
-6. Update the contract address in `src/components/AIOptimizer.js`:
+To deploy updates:
 
-7. Start the development server:
+1. Push changes to the main branch of the GitHub repository
+2. Vercel will automatically detect changes and redeploy the site
 
-   ```
-   npm start
-   ```
+## Team
 
-8. Open your browser and navigate to `http://localhost:3000`
+- Akash Jagannathan - Full Stack Blockchain Developer
 
-## Running Tests
+## Testing Instructions
 
-To run the test suite:
+1. Visit our deployed app at [\[Your Vercel URL\]](https://chain-sage-8a6iv5zlx-jak18000s-projects.vercel.app/)
+2. Connect your wallet (ensure you're on the Zircuit Testnet)
+3. Explore available DeFi strategies
+4. Use the AI optimization feature to get personalized strategy recommendations
 
-```
-npx hardhat test
-```
+## Feedback on Building with Zircuit
 
-## Building for Production
-
-To create a production build:
-
-```
-npm run build
-```
-
-This will generate a `build` folder with optimized production-ready files.
-
-## License
-
-This project is licensed under the MIT License.
+Our experience building on Zircuit has been positive. The network's compatibility with Ethereum tools made development straightforward, while its high performance allowed for quick transaction confirmations. The integration with LayerZero for cross-chain messaging was seamless, enabling us to create a truly interoperable DeFi strategy optimizer.

@@ -189,40 +189,65 @@ function AIOptimizer({ provider, network }) {
   };
 
   return (
-    <div>
-      <h2>Cross-Chain DeFi Strategy Optimizer</h2>
-      {isLoading && <div className="loader">Loading strategies...</div>}
-      {error && <div className="error">{error}</div>}
-      {!isLoading && !error && (
-        <StrategyDisplay
-          strategies={sortedStrategies}
-          optimizedStrategy={optimizedStrategy}
-        />
+    <div className="ai-optimizer">
+      <h2>DeFi Strategies</h2>
+      {isLoading ? (
+        <p>Loading available strategies...</p>
+      ) : error ? (
+        <p className="error">{error}</p>
+      ) : strategies.length > 0 ? (
+        <>
+          <p>
+            Here are the current DeFi strategies available on the Zircuit
+            Testnet:
+          </p>
+          <StrategyDisplay
+            strategies={sortedStrategies}
+            optimizedStrategy={optimizedStrategy}
+          />
+          <button
+            className="optimize-button"
+            onClick={optimizeStrategy}
+            disabled={isOptimizing}
+          >
+            {isOptimizing ? "Optimizing..." : "Optimize Strategy"}
+          </button>
+          <button
+            className="optimize-button"
+            onClick={optimizeZircuitStrategy}
+            disabled={isOptimizing}
+          >
+            {isOptimizing ? "Optimizing..." : "Optimize Zircuit Strategy"}
+          </button>
+          <button
+            className="optimize-button"
+            onClick={optimizeWithPhala}
+            disabled={isOptimizing}
+          >
+            {isOptimizing ? "Optimizing..." : "Optimize with Phala"}
+          </button>
+          {isOptimizing && (
+            <p>
+              Our AI is analyzing the best strategy across multiple chains. This
+              may take a moment...
+            </p>
+          )}
+        </>
+      ) : (
+        <p>No strategies available at the moment. Please check back later.</p>
       )}
-      <button
-        className="optimize-button"
-        onClick={optimizeStrategy}
-        disabled={isOptimizing}
-      >
-        {isOptimizing ? "Optimizing..." : "Optimize Strategy"}
-      </button>
-      <button
-        className="optimize-button"
-        onClick={optimizeZircuitStrategy}
-        disabled={isOptimizing}
-      >
-        {isOptimizing ? "Optimizing..." : "Optimize Zircuit Strategy"}
-      </button>
-      <button
-        className="optimize-button"
-        onClick={optimizeWithPhala}
-        disabled={isOptimizing}
-      >
-        {isOptimizing ? "Optimizing..." : "Optimize with Phala"}
-      </button>
-      {isOptimizing && (
-        <div className="optimizing-message">
-          Optimizing strategy across chains. Please wait...
+      {optimizedStrategy && (
+        <div className="optimized-strategy">
+          <h3>Optimized Strategy</h3>
+          <p>Based on our AI analysis, we recommend the following strategy:</p>
+          <StrategyDisplay
+            strategies={[optimizedStrategy]}
+            optimizedStrategy={optimizedStrategy}
+          />
+          <p>
+            This strategy offers the best balance of APY, risk, and liquidity
+            across multiple chains.
+          </p>
         </div>
       )}
     </div>

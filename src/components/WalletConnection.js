@@ -13,7 +13,7 @@ function WalletConnection({ onConnect }) {
         console.log("network: ", network);
         if (network.chainId !== 48899) {
           // Zircuit testnet chain ID
-          alert("Please connect to the Zircuit testnet");
+          alert("Please connect to the Zircuit testnet and refresh");
           return;
         }
         const signer = provider.getSigner();
