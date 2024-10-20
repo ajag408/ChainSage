@@ -3,21 +3,22 @@ import React from "react";
 function StrategyDisplay({ strategies, optimizedStrategy }) {
   return (
     <div>
-      <h2>Current Strategies</h2>
-      <ul>
-        {strategies.map((strategy, index) => (
-          <li key={index}>
-            {strategy.name}: APY {strategy.apy}%, Risk {strategy.risk},
-            Liquidity {strategy.liquidity}, Volatility {strategy.volatility}
-          </li>
-        ))}
-      </ul>
-      <h2>AI Recommended Strategy</h2>
+      <h3>Available Strategies:</h3>
+      {strategies.map((strategy, index) => (
+        <div key={index}>
+          <p>Name: {strategy.name}</p>
+          <p>APY: {strategy.apy}%</p>
+          <p>Risk: {strategy.risk}</p>
+          <p>Liquidity: {strategy.liquidity}</p>
+          <p>Volatility: {strategy.volatility}</p>
+        </div>
+      ))}
       {optimizedStrategy && (
-        <p>
-          The AI recommends: {optimizedStrategy.name} with a score of{" "}
-          {parseFloat(optimizedStrategy.score).toFixed(2)}
-        </p>
+        <div>
+          <h3>Optimized Strategy:</h3>
+          <p>Name: {optimizedStrategy.name}</p>
+          <p>APY: {optimizedStrategy.apy}%</p>
+        </div>
       )}
     </div>
   );

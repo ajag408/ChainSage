@@ -1,100 +1,110 @@
 import React, { useState, useEffect } from "react";
-import AIModel from "../AIModel";
 import StrategyDisplay from "./StrategyDisplay";
 import { ethers } from "ethers";
-import DeFiStrategyOptimizerABI from "../artifacts/contracts/DeFiStrategyOptimizer.sol/DeFiStrategyOptimizer.json";
+import ChainSageOAppABI from "../artifacts/contracts/ChainSageOApp.sol/ChainSageOApp.json";
+import { Options } from "@layerzerolabs/lz-v2-utilities";
 
-const contractAddress = "0x9317ce9c06a8f69ACB3bf47f11ce4026ebD7cB84";
+const contractAddress = "0xD9ab8923Bd00B0734dE33914636ac65ccF41c623";
+
+async function waitForTransaction(provider, txHash, maxAttempts = 10) {
+  for (let i = 0; i < maxAttempts; i++) {
+    console.log(`Attempt ${i + 1} to get transaction receipt...`);
+    const receipt = await provider.getTransactionReceipt(txHash);
+    if (receipt) {
+      return receipt;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds between attempts
+  }
+  throw new Error(`Transaction not mined after ${maxAttempts} attempts`);
+}
 
 function AIOptimizer({ provider, network }) {
   const [strategies, setStrategies] = useState([]);
-  const [aiModel, setAiModel] = useState(null);
   const [optimizedStrategy, setOptimizedStrategy] = useState(null);
-  const [isTraining, setIsTraining] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
+
+  const ZIRCUIT_TESTNET_EID = 40282;
+  const DESTINATION_EID = 40232; // Example destination chain EID
 
   useEffect(() => {
-    const fetchStrategies = async () => {
-      try {
-        const contract = new ethers.Contract(
-          contractAddress,
-          DeFiStrategyOptimizerABI.abi,
-          provider
-        );
-        console.log("Contract instance created");
-        const fetchedStrategies = await contract.getStrategiesData();
-        const processedStrategies = fetchedStrategies.map((strategy) => ({
-          name: strategy.name,
-          apy: strategy.apy.toString(),
-          risk: strategy.risk.toString(),
-          liquidity: strategy.liquidity.toString(),
-          volatility: strategy.volatility.toString(),
-        }));
-        console.log("Fetched strategies:", processedStrategies);
-        setStrategies(processedStrategies);
-      } catch (error) {
-        console.error("Error fetching strategies:", error);
-        setStrategies([]);
-      }
-    };
-
-    if (provider && network) {
+    if (provider) {
       fetchStrategies();
-      setAiModel(new AIModel());
     }
-  }, [provider, network]);
+  }, [provider]);
 
-  useEffect(() => {
-    if (aiModel && strategies.length > 0) {
-      const timer = setTimeout(() => {
-        trainAndPredict();
-      }, 1000); // Delay of 1 second
-      return () => clearTimeout(timer);
-    }
-  }, [aiModel, strategies]);
-
-  const trainAndPredict = async () => {
-    if (isTraining) return;
-    setIsTraining(true);
+  const fetchStrategies = async () => {
     try {
-      const trainingData = strategies.map((s) => [
-        parseFloat(s.apy),
-        parseFloat(s.risk),
-        parseFloat(s.liquidity),
-        parseFloat(s.volatility),
-      ]);
-      const labels = strategies.map((s) => [parseFloat(s.apy)]);
+      const contract = new ethers.Contract(
+        contractAddress,
+        ChainSageOAppABI.abi,
+        provider
+      );
+      const fetchedStrategies = await contract.getStrategiesData(
+        ZIRCUIT_TESTNET_EID
+      );
+      setStrategies(fetchedStrategies);
+    } catch (error) {
+      console.error("Error fetching strategies:", error);
+    }
+  };
 
-      await aiModel.train(trainingData, labels);
-
-      const predictions = strategies.map((s) => ({
-        name: s.name,
-        score: aiModel.predict([
-          parseFloat(s.apy),
-          parseFloat(s.risk),
-          parseFloat(s.liquidity),
-          parseFloat(s.volatility),
-        ]),
-      }));
-
-      const bestStrategy = predictions.reduce((prev, current) =>
-        prev.score > current.score ? prev : current
+  const optimizeStrategy = async () => {
+    setIsOptimizing(true);
+    try {
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        contractAddress,
+        ChainSageOAppABI.abi,
+        signer
       );
 
-      setOptimizedStrategy(bestStrategy);
+      const options = Options.newOptions()
+        .addExecutorLzReceiveOption(200000, 0)
+        .toHex()
+        .toString();
+
+      const tx = await contract.optimizeStrategy(DESTINATION_EID, options, {
+        value: ethers.utils.parseEther("0.01"),
+        gasLimit: 500000,
+      });
+
+      console.log("Waiting for transaction receipt...");
+      const receipt = await waitForTransaction(provider, tx.hash);
+      console.log("Transaction mined. Gas used:", receipt.gasUsed.toString());
+
+      // Simulate StrategyOptimized event
+      setTimeout(() => {
+        const simulatedStrategy = {
+          name: "Simulated Optimal Strategy",
+          apy: (Math.random() * 1000).toFixed(2).toString(),
+        };
+        setOptimizedStrategy(simulatedStrategy);
+        setIsOptimizing(false);
+      }, 3000); // Simulate a 3-second delay
     } catch (error) {
-      console.error("Error in trainAndPredict:", error);
-    } finally {
-      setIsTraining(false);
+      console.error("Error optimizing strategy:", error);
+      alert("Error optimizing strategy. Please check the console for details.");
+      setIsOptimizing(false);
     }
   };
 
   return (
     <div>
-      <h2>DeFi Strategy Optimizer</h2>
+      <h2>Cross-Chain DeFi Strategy Optimizer</h2>
       <StrategyDisplay
-        strategies={strategies}
+        strategies={strategies.map((strategy) => ({
+          ...strategy,
+          apy: strategy.apy.toString(),
+          risk: strategy.risk.toString(),
+          liquidity: strategy.liquidity.toString(),
+          volatility: strategy.volatility.toString(),
+        }))}
         optimizedStrategy={optimizedStrategy}
       />
+      <button onClick={optimizeStrategy} disabled={isOptimizing}>
+        {isOptimizing ? "Optimizing..." : "Optimize Strategy"}
+      </button>
+      {isOptimizing && <p>Optimizing strategy across chains. Please wait...</p>}
     </div>
   );
 }
