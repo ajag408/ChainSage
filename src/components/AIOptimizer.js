@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import StrategyDisplay from "./StrategyDisplay";
 import { ethers } from "ethers";
 import ChainSageOAppABI from "../artifacts/contracts/ChainSageOApp.sol/ChainSageOApp.json";
@@ -23,6 +23,8 @@ function AIOptimizer({ provider, network }) {
   const [strategies, setStrategies] = useState([]);
   const [optimizedStrategy, setOptimizedStrategy] = useState(null);
   const [isOptimizing, setIsOptimizing] = useState(false);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const ZIRCUIT_TESTNET_EID = 40282;
   const DESTINATION_EID = 40232; // Example destination chain EID
@@ -33,8 +35,10 @@ function AIOptimizer({ provider, network }) {
     }
   }, [provider]);
 
-  const fetchStrategies = async () => {
+  const fetchStrategies = useCallback(async () => {
     try {
+      setIsLoading(true);
+      setError(null);
       const contract = new ethers.Contract(
         contractAddress,
         ChainSageOAppABI.abi,
@@ -46,8 +50,15 @@ function AIOptimizer({ provider, network }) {
       setStrategies(fetchedStrategies);
     } catch (error) {
       console.error("Error fetching strategies:", error);
+      setError("Failed to fetch strategies. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [provider, ZIRCUIT_TESTNET_EID]);
+
+  const sortedStrategies = useMemo(() => {
+    return [...strategies].sort((a, b) => b.apy - a.apy);
+  }, [strategies]);
 
   const optimizeStrategy = async () => {
     setIsOptimizing(true);
@@ -170,16 +181,14 @@ function AIOptimizer({ provider, network }) {
   return (
     <div>
       <h2>Cross-Chain DeFi Strategy Optimizer</h2>
-      <StrategyDisplay
-        strategies={strategies.map((strategy) => ({
-          ...strategy,
-          apy: strategy.apy.toString(),
-          risk: strategy.risk.toString(),
-          liquidity: strategy.liquidity.toString(),
-          volatility: strategy.volatility.toString(),
-        }))}
-        optimizedStrategy={optimizedStrategy}
-      />
+      {isLoading && <p>Loading strategies...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {!isLoading && !error && (
+        <StrategyDisplay
+          strategies={sortedStrategies}
+          optimizedStrategy={optimizedStrategy}
+        />
+      )}
       <button onClick={optimizeStrategy} disabled={isOptimizing}>
         {isOptimizing ? "Optimizing..." : "Optimize Strategy"}
       </button>
