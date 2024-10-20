@@ -197,10 +197,7 @@ function AIOptimizer({ provider, network }) {
         <p className="error">{error}</p>
       ) : strategies.length > 0 ? (
         <>
-          <p>
-            Here are the current DeFi strategies available on the Zircuit
-            Testnet:
-          </p>
+          <p>Here are the current DeFi strategies available across chains:</p>
           <StrategyDisplay
             strategies={sortedStrategies}
             optimizedStrategy={optimizedStrategy}
