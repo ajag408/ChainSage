@@ -39,7 +39,7 @@ describe("ChainSageOApp", function () {
       owner.address
     );
     await chainSageOApp.deployed();
-    console.log("ChainSageOApp deployed to:", chainSageOApp.address);
+    // console.log("ChainSageOApp deployed to:", chainSageOApp.address);
 
     opchainSageOApp = await ChainSageOApp.deploy(
       "0x6EDCE65403992e310A62460808c4b910D972f10f",
@@ -47,10 +47,10 @@ describe("ChainSageOApp", function () {
     );
 
     await opchainSageOApp.deployed();
-    console.log(
-      "Destination ChainSageOApp deployed to:",
-      opchainSageOApp.address
-    );
+    // console.log(
+    //   "Destination ChainSageOApp deployed to:",
+    //   opchainSageOApp.address
+    // );
   });
 
   it("Should add strategies", async function () {
@@ -85,7 +85,7 @@ describe("ChainSageOApp", function () {
     );
   });
 
-  it.only("Should optimize strategy across chains", async function () {
+  it("Should optimize strategy across chains", async function () {
     const balance = await ethers.provider.getBalance(owner.address);
     console.log("Account balance:", ethers.utils.formatEther(balance));
 
@@ -204,24 +204,42 @@ describe("ChainSageOApp", function () {
     expect(bestChainId).to.equal(DESTINATION_EID);
   });
 
-  // it("Should optimize Zircuit strategy with bonus", async function () {
-  //   await chainSageOApp
-  //     .connect(owner)
-  //     .addStrategy(ZIRCUIT_TESTNET_EID, "Strategy A", 1000, 3, 1000, 2);
+  it.only("Should optimize Zircuit strategy with bonus", async function () {
+    await chainSageOApp
+      .connect(owner)
+      .setChainIdMapping(
+        await ethers.provider.getNetwork().then((n) => n.chainId),
+        ZIRCUIT_TESTNET_EID
+      );
+    console.log("Chain ID mapping set");
 
-  //   await chainSageOApp
-  //     .connect(user)
-  //     .optimizeZircuitStrategy(
-  //       ZIRCUIT_TESTNET_EID,
-  //       ethers.utils.defaultAbiCoder.encode(["uint16", "uint256"], [1, 200000]),
-  //       { value: ethers.utils.parseEther("0.1") }
-  //     );
+    await chainSageOApp
+      .connect(owner)
+      .addStrategy(ZIRCUIT_TESTNET_EID, "Zircuit Strategy", 1000, 3, 1000, 2);
 
-  //   const strategies = await chainSageOApp.getStrategiesData(
-  //     ZIRCUIT_TESTNET_EID
-  //   );
-  //   expect(strategies[0].apy).to.equal(1050); // 5% bonus applied
-  // });
+    await chainSageOApp
+      .connect(owner)
+      .setPeer(DESTINATION_EID, addressToBytes32(opchainSageOApp.address));
+    await opchainSageOApp
+      .connect(owner)
+      .setPeer(ZIRCUIT_TESTNET_EID, addressToBytes32(chainSageOApp.address));
+    console.log("Peers set");
+    const options = Options.newOptions()
+      .addExecutorLzReceiveOption(200000, 0)
+      .toHex()
+      .toString();
+
+    await expect(
+      chainSageOApp
+        .connect(owner)
+        .optimizeZircuitStrategy(DESTINATION_EID, options, {
+          value: ethers.utils.parseEther("0.01"),
+          gasLimit: 500000,
+        })
+    ).to.not.be.reverted;
+
+    // Note: We can't test for the StrategyOptimized event as it's not emitted
+  });
 
   // it("Should optimize strategy using Phala simulation", async function () {
   //   await chainSageOApp

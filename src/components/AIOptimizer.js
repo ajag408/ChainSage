@@ -88,6 +88,54 @@ function AIOptimizer({ provider, network }) {
     }
   };
 
+  const optimizeZircuitStrategy = async () => {
+    setIsOptimizing(true);
+    try {
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        contractAddress,
+        ChainSageOAppABI.abi,
+        signer
+      );
+
+      const options = Options.newOptions()
+        .addExecutorLzReceiveOption(200000, 0)
+        .toHex()
+        .toString();
+
+      const tx = await contract.optimizeStrategy(DESTINATION_EID, options, {
+        value: ethers.utils.parseEther("0.01"),
+        gasLimit: 500000,
+      });
+
+      console.log("Waiting for transaction receipt...");
+      const receipt = await waitForTransaction(provider, tx.hash);
+      console.log("Transaction confirmed:", receipt.transactionHash);
+
+      // Simulate Zircuit-specific optimization
+      setTimeout(() => {
+        const zircuitStrategies = strategies.map((strategy) => ({
+          ...strategy,
+          apy: Math.floor(strategy.apy * 1.05), // 5% APY bonus
+        }));
+        const bestStrategy = zircuitStrategies.reduce((prev, current) =>
+          prev.apy > current.apy ? prev : current
+        );
+        setOptimizedStrategy({
+          name: `Zircuit ${bestStrategy.name}`,
+          apy: bestStrategy.apy.toString(),
+        });
+        setIsOptimizing(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error optimizing Zircuit strategy:", error);
+      alert(
+        "Error optimizing Zircuit strategy. Please check the console for details."
+      );
+      setIsOptimizing(false);
+    }
+  };
+
   return (
     <div>
       <h2>Cross-Chain DeFi Strategy Optimizer</h2>
@@ -103,6 +151,9 @@ function AIOptimizer({ provider, network }) {
       />
       <button onClick={optimizeStrategy} disabled={isOptimizing}>
         {isOptimizing ? "Optimizing..." : "Optimize Strategy"}
+      </button>
+      <button onClick={optimizeZircuitStrategy} disabled={isOptimizing}>
+        {isOptimizing ? "Optimizing..." : "Optimize Zircuit Strategy"}
       </button>
       {isOptimizing && <p>Optimizing strategy across chains. Please wait...</p>}
     </div>
