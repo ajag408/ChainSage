@@ -1,6 +1,6 @@
 # ChainSage: AI-Powered DeFi Strategy Optimizer
 
-ChainSage is a decentralized application (dApp) that leverages artificial intelligence to optimize DeFi investment strategies across multiple chains. It utilizes smart contracts on the Zircuit testnet and a React frontend to provide users with AI-driven insights for their DeFi investments.
+ChainSage is a decentralized application (dApp) that leverages AI to optimize DeFi investment strategies across multiple chains. It utilizes smart contracts on the Zircuit testnet and a React frontend to provide users with AI-driven insights for their DeFi investments.
 
 ## Problem Statement
 
